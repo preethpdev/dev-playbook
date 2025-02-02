@@ -1,0 +1,53 @@
+- name: Setup my workstation
+  hosts: all
+  tasks:
+    - name: Install ghostty repository
+      community.general.copr:
+        name: pgdev/ghostty
+        state: enabled
+      become: yes
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: Update dnf cache
+      ansible.builtin.dnf:
+        update_cache: yes
+      become: yes
+      when: ansible_pkg_mgr == "dnf5"
+
+    - name: Install cli tools
+      ansible.builtin.package:
+        name:
+          - zsh
+          - git
+        state: present
+      become: yes
+
+    - name: Setup programming languages
+      ansible.builtin.package:
+        name:
+          - golang
+          - php-cli
+          - composer
+        state: present
+      become: yes
+
+    - name: Install bun
+      ansible.builtin.command:
+        cmd: curl -fsSL https://bun.sh/install | bash
+        creates: "{{ ansible_env.HOME }}/.bun"
+        removes: "{{ ansible_env.HOME }}/.bun"
+
+    - name: Install development tools
+      ansible.builtin.package:
+        name:
+          - ghostty
+        state: present
+      become: yes
+
+    - name: Install fonts
+      ansible.builtin.dnf:
+        name:
+          - jetbrains-mono-fonts
+        state: present
+      become: yes
+      when: ansible_facts['os_family'] == 'RedHat'
