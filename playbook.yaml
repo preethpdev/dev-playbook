@@ -19,6 +19,8 @@
         name:
           - zsh
           - git
+          - eza
+          - bat
         state: present
       become: yes
 
