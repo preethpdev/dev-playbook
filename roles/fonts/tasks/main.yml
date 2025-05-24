@@ -1,0 +1,7 @@
+- name: Install fonts
+  ansible.builtin.dnf:
+    name:
+      - jetbrains-mono-fonts
+    state: present
+  become: true
+  tags: fonts

@@ -1,0 +1,6 @@
+- name: Install Browsers
+  block:
+    - name: Zen Browser
+      community.general.flatpak:
+        name: app.zen_browser.zen
+        state: present

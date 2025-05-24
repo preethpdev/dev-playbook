@@ -1,0 +1,6 @@
+- name: Setup my workstation
+  hosts: all
+  roles:
+    - apps
+    - fonts
+    - vscode
