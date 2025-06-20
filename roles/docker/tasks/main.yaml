@@ -1,0 +1,55 @@
+- name: Install docker
+  block:
+    - name: Remove old docker packages
+      ansible.builtin.dnf:
+        name:
+          - docker
+          - docker-client
+          - docker-client-latest
+          - docker-common
+          - docker-latest
+          - docker-latest-logrotate
+          - docker-logrotate
+          - docker-selinux
+          - docker-engine-selinux
+          - docker-engine
+        state: absent
+      become: true
+      ignore_errors: true
+
+    - name: Remove residue files
+      ansible.builtin.file:
+        path: /var/lib/docker/
+        state: absent
+      become: true
+      ignore_errors: true
+
+    - name: Install dnf-plugins-core
+      ansible.builtin.dnf:
+        name: dnf-plugins-core
+        state: present
+      become: true
+
+    - name: Add docker ce repository
+      ansible.builtin.command:
+        cmd: dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+        creates: /etc/yum.repos.d/docker-ce.repo
+      become: true
+
+    - name: Install docker CE
+      ansible.builtin.dnf:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+      become: true
+
+    - name: Start and enable docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+      become: true
