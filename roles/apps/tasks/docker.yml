@@ -15,14 +15,14 @@
           - docker-engine
         state: absent
       become: true
-      ignore_errors: true
+      failed_when: false
 
     - name: Remove residue files
       ansible.builtin.file:
         path: /var/lib/docker/
         state: absent
       become: true
-      ignore_errors: true
+      failed_when: false
 
     - name: Install dnf-plugins-core
       ansible.builtin.dnf:

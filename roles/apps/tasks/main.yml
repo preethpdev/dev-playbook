@@ -1,17 +1,3 @@
-- name: Install Flatpak apps
-  community.general.flatpak:
-    name: "{{ flatpak_apps }}"
-    state: present
-  loop:
-    - app.zen_browser.zen
-    - io.missioncenter.MissionCenter
-    - com.bitwarden.desktop
-  loop_control:
-    loop_var: flatpak_apps
-  tags:
-    - apps
-    - flatpak apps
-
 - name: Add third party repositories
   tags:
     - apps
@@ -58,7 +44,7 @@
 - name: Install dnf packages
   tags:
     - apps
-    - os_apps
+    - os_repo_apps
   block:
     - name: Ensure dnf is up to date
       ansible.builtin.dnf:
@@ -77,3 +63,24 @@
           - stow
           - neovim
         state: present
+
+- name: Install Flatpak apps
+  community.general.flatpak:
+    name: "{{ flatpak_apps }}"
+    state: present
+  loop:
+    - app.zen_browser.zen
+    - io.missioncenter.MissionCenter
+    - com.bitwarden.desktop
+    - dev.zed.Zed
+  loop_control:
+    loop_var: flatpak_apps
+  tags:
+    - apps
+    - flatpak apps
+
+- name: Include Docker tasks
+  ansible.builtin.import_tasks: docker.yml
+  tags:
+    - apps
+    - os_repo_apps
